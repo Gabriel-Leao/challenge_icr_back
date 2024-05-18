@@ -7,16 +7,6 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'README.md'
-      - '.husky'
-      - '.github/**'
-      - '**/*.csv'
-      - '.env.example'
-      - '.eslintrc.js'
-      - '.gitignore'
-      - '.prettierrc'
-      - 'LICENSE'
   workflow_dispatch:
 
 jobs:
@@ -33,9 +23,9 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm install -g @nestjs/cli
           npm install
-          npm run build
+          npm run build --if-present
+          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -67,9 +57,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_07BE4FCE79D44C92AF656B5A0E538485 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_52FB745A663B4F3DA6F7C78D0D00D127 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_85E214425EDC4AD49F02FFC718630207 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BF2CAAE43ADE4FADBA6B04C554146145 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2459D97DA74E45D2BBD876EAB53DCB27 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_85D8F041F7B9412BACA85D658A2634E2 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
