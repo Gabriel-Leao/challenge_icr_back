@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { UserService } from './user.service'
-import { CreateFavoriteDto, CreateUserDto } from './user.dto'
+import { CreateUserDto } from './user.dto'
 
 @Controller('user')
 export class UserController {
@@ -32,19 +32,5 @@ export class UserController {
   @Delete('/:userId')
   async deleteUser(@Param('userId') userId: string) {
     return await this.userService.deleteUser(userId)
-  }
-
-  @Post('/:userId/favorites')
-  async addFavorite(
-    @Param('userId') userId: string,
-    @Body() data: CreateFavoriteDto
-  ) {
-    const { bookId } = data
-    return await this.userService.addFavorite(userId, bookId)
-  }
-
-  @Delete('/:userId/favorites/:favoriteId')
-  async removeFavorite(@Param('favoriteId') favoriteId: string) {
-    return await this.userService.removeFavorite(favoriteId)
   }
 }
