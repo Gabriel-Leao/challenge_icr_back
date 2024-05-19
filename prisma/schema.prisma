@@ -43,11 +43,10 @@ model Book {
 
 model Category {
   id         String   @id @default(uuid())
-  name       String
+  name       String   @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  book       Book?    @relation(fields: [book_id], references: [id])
-  book_id    String?
+  books      Book[]
 
   @@map("categories")
 }

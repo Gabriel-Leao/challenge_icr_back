@@ -11,9 +11,9 @@ export class UserController {
     return this.userService.getAllUsers()
   }
 
-  @Get('/:id')
-  async getUser(@Param('id') id: string) {
-    return await this.userService.getUser(id)
+  @Get('/:userId')
+  async getUser(@Param('userId') userId: string) {
+    return await this.userService.getUser(userId)
   }
 
   @Post()
@@ -21,14 +21,17 @@ export class UserController {
     return await this.userService.createUser(data)
   }
 
-  @Put('/:id')
-  async updateUser(@Param('id') id: string, @Body() data: CreateUserDto) {
-    return await this.userService.updateUser(id, data)
+  @Put('/:userId')
+  async updateUser(
+    @Param('userId') userId: string,
+    @Body() data: CreateUserDto
+  ) {
+    return await this.userService.updateUser(userId, data)
   }
 
-  @Delete('/:id')
-  async deleteUser(@Param('id') id: string) {
-    return await this.userService.deleteUser(id)
+  @Delete('/:userId')
+  async deleteUser(@Param('userId') userId: string) {
+    return await this.userService.deleteUser(userId)
   }
 
   @Post('/:userId/favorites')
