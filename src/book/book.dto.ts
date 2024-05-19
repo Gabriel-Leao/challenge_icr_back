@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator'
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+  MinLength
+} from 'class-validator'
 
 export class CreateBookDto {
   @IsString({ message: 'O campo title tem que ser um texto' })
@@ -10,8 +16,8 @@ export class CreateBookDto {
 
   @IsString({ message: 'O campo description tem que ser um texto' })
   @IsNotEmpty({ message: 'O campo description é obrigatório' })
-  @Length(3, 1000, {
-    message: 'O campo description deve ter entre 3 e 1000 caracteres'
+  @MinLength(150, {
+    message: 'O campo description deve ter no mínimo 150 caracteres'
   })
   description: string
 
