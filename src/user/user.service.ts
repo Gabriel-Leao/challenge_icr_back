@@ -1,8 +1,57 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, Injectable } from '@nestjs/common'
+import { CreateUserDto } from './user.dto'
+import { PrismaService } from '../prisma.service'
+import { v4 as uuidv4 } from 'uuid'
+import { genSaltSync, hashSync } from 'bcrypt'
 
 @Injectable()
 export class UserService {
-  hello() {
-    return 'User module'
+  constructor(private readonly prisma: PrismaService) {}
+
+  async createUser(data: CreateUserDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: data.email
+      }
+    })
+    if (user) {
+      throw new HttpException('Email já cadastrado', 400)
+    }
+    data.password = hashSync(data.password, genSaltSync(10))
+    const id = uuidv4()
+    return this.prisma.user.create({
+      data: {
+        id,
+        ...data
+      }
+    })
+  }
+
+  async getAllUsers() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true
+      }
+    })
+  }
+
+  async getUser(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id
+      },
+      select: {
+        name: true,
+        email: true,
+        role: true,
+        password: true
+      }
+    })
+
+    if (!user) {
+      throw new HttpException('Usuário não encontrado', 404)
+    }
+    return user
   }
 }
