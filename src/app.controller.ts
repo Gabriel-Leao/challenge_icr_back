@@ -5,6 +5,6 @@ import { Response } from 'express'
 export class AppController {
   @Get()
   index(@Res() res: Response) {
-    res.redirect('/auth')
+    res.redirect('/book')
   }
 }

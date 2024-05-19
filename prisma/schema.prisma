@@ -13,7 +13,7 @@ enum Role {
 }
 
 model User {
-  id       String @id
+  id       String @id @default(uuid())
   email    String @unique
   name     String
   password String
@@ -28,44 +28,38 @@ model User {
 }
 
 model Book {
-  id          String  @id
+  id          String     @id @default(uuid())
   title       String
   author      String
   description String
   image       String?
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  favorite   Favorite[]
-  categories Category[]
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  favorite    Favorite[]
+  categories  Category[]
 
   @@map("books")
 }
 
 model Category {
-  id   String @id
-  name String
-
+  id         String   @id @default(uuid())
+  name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
-  book    Book?   @relation(fields: [book_id], references: [id])
-  book_id String?
+  book       Book?    @relation(fields: [book_id], references: [id])
+  book_id    String?
 
   @@map("categories")
 }
 
 model Favorite {
-  id String @id
-
+  id         String   @id @default(uuid())
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
-  user    User?   @relation(fields: [user_id], references: [id])
-  user_id String?
-  Book    Book?   @relation(fields: [book_id], references: [id])
-  book_id String?
+  user       User?    @relation(fields: [user_id], references: [id])
+  user_id    String?
+  book       Book?    @relation(fields: [book_id], references: [id])
+  book_id    String?
 
   @@map("favorites")
 }

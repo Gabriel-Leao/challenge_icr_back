@@ -1,7 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { CreateBookDto } from './book.dto'
-import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
 export class BookService {
@@ -34,16 +33,14 @@ export class BookService {
     })
 
     if (!book) {
-      throw new HttpException('Book not found', 404)
+      throw new HttpException('Livro não encontrado', 404)
     }
     return book
   }
 
   createBook(data: CreateBookDto) {
-    const id = uuidv4()
     return this.prisma.book.create({
       data: {
-        id,
         ...data
       }
     })
@@ -54,7 +51,7 @@ export class BookService {
       where: { id }
     })
     if (!book) {
-      throw new HttpException('Book not found', 404)
+      throw new HttpException('Livro não encontrado', 404)
     }
     return this.prisma.book.update({
       where: { id },
@@ -67,7 +64,7 @@ export class BookService {
       where: { id }
     })
     if (!book) {
-      throw new HttpException('Book not found', 404)
+      throw new HttpException('Livro não encontrado', 404)
     }
     return this.prisma.book.delete({
       where: { id }

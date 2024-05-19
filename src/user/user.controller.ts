@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { UserService } from './user.service'
-import { CreateUserDto } from './user.dto'
+import { CreateFavoriteDto, CreateUserDto } from './user.dto'
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async getAllUsers() {
+  getAllUsers() {
     return this.userService.getAllUsers()
   }
 
@@ -29,5 +29,19 @@ export class UserController {
   @Delete('/:id')
   async deleteUser(@Param('id') id: string) {
     return await this.userService.deleteUser(id)
+  }
+
+  @Post('/:userId/favorites')
+  async addFavorite(
+    @Param('userId') userId: string,
+    @Body() data: CreateFavoriteDto
+  ) {
+    const { bookId } = data
+    return await this.userService.addFavorite(userId, bookId)
+  }
+
+  @Delete('/:userId/favorites/:favoriteId')
+  async removeFavorite(@Param('favoriteId') favoriteId: string) {
+    return await this.userService.removeFavorite(favoriteId)
   }
 }

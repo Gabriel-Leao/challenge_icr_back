@@ -1,7 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './user.dto'
 import { PrismaService } from '../prisma.service'
-import { v4 as uuidv4 } from 'uuid'
 import { genSaltSync, hashSync } from 'bcrypt'
 
 @Injectable()
@@ -26,7 +25,20 @@ export class UserService {
         name: true,
         email: true,
         role: true,
-        password: true
+        password: true,
+        favorites: {
+          select: {
+            id: true,
+            book: {
+              select: {
+                id: true,
+                title: true,
+                description: true,
+                author: true
+              }
+            }
+          }
+        }
       }
     })
 
@@ -46,10 +58,8 @@ export class UserService {
       throw new HttpException('Email já cadastrado', 400)
     }
     data.password = hashSync(data.password, genSaltSync(10))
-    const id = uuidv4()
     return this.prisma.user.create({
       data: {
-        id,
         ...data
       }
     })
@@ -97,6 +107,49 @@ export class UserService {
     return this.prisma.user.delete({
       where: {
         id
+      }
+    })
+  }
+
+  async addFavorite(userId: string, bookId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } })
+    if (!user) {
+      throw new HttpException('Usuário não encontrado', 404)
+    }
+    const book = await this.prisma.book.findUnique({ where: { id: bookId } })
+    if (!book) {
+      throw new HttpException('Livro não encontrado', 404)
+    }
+    const favorite = await this.prisma.favorite.findFirst({
+      where: {
+        book_id: bookId
+      }
+    })
+    if (favorite) {
+      throw new HttpException('Livro já favoritado', 400)
+    }
+    return this.prisma.favorite.create({
+      data: {
+        user_id: userId,
+        book_id: bookId
+      }
+    })
+  }
+
+  async removeFavorite(favoriteId: string) {
+    const favorite = await this.prisma.favorite.findUnique({
+      where: {
+        id: favoriteId
+      }
+    })
+
+    if (!favorite) {
+      throw new HttpException('Favorito não encontrado', 404)
+    }
+
+    return this.prisma.favorite.delete({
+      where: {
+        id: favoriteId
       }
     })
   }
