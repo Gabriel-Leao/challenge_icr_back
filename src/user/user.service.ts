@@ -2,10 +2,15 @@ import { HttpException, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './user.dto'
 import { PrismaService } from '../prisma.service'
 import { genSaltSync, hashSync } from 'bcrypt'
+import { JwtService } from '@nestjs/jwt'
+import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService
+  ) {}
 
   async getAllUsers() {
     return this.prisma.user.findMany({
@@ -58,11 +63,23 @@ export class UserService {
       throw new HttpException('Email já cadastrado', 400)
     }
     data.password = hashSync(data.password, genSaltSync(10))
-    return this.prisma.user.create({
+    const id = uuidv4()
+    await this.prisma.user.create({
       data: {
+        id,
         ...data
       }
     })
+
+    const payload = {
+      id,
+      email: data.email,
+      role: data.role,
+      name: data.name
+    }
+    return {
+      access_token: this.jwtService.sign(payload, { expiresIn: '7d' })
+    }
   }
 
   async updateUser(id: string, data: CreateUserDto) {
