@@ -19,8 +19,9 @@ export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @Get()
-  getAllBooks() {
-    return this.bookService.getAllBooks()
+  getAllBooks(@Body() data: { userId: string }) {
+    const { userId } = data
+    return this.bookService.getAllBooks(userId)
   }
 
   @Get('/:bookId')

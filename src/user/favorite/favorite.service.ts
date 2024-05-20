@@ -33,7 +33,10 @@ export class FavoriteService {
     }
     const favorite = await this.prisma.favorite.findFirst({
       where: {
-        book_id: bookId
+        book_id: bookId,
+        AND: {
+          user_id: userId
+        }
       }
     })
     if (favorite) {

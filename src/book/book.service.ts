@@ -6,14 +6,15 @@ import { CreateBookDto } from './book.dto'
 export class BookService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAllBooks() {
+  async getAllBooks(userId?: string) {
     return this.prisma.book.findMany({
       select: {
         id: true,
         title: true,
         description: true,
         author: true,
-        image: true
+        image: true,
+        favorite: userId && { where: { user_id: userId } }
       }
     })
   }
