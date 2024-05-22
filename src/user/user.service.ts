@@ -121,6 +121,9 @@ export class UserService {
       throw new HttpException('Usuário não encontrado', 404)
     }
 
+    await this.prisma.favorite.deleteMany({
+      where: { user_id: id }
+    })
     return this.prisma.user.delete({
       where: {
         id

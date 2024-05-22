@@ -74,6 +74,9 @@ export class BookService {
     if (!book) {
       throw new HttpException('Livro não encontrado', 404)
     }
+    await this.prisma.favorite.deleteMany({
+      where: { book_id: id }
+    })
     return this.prisma.book.delete({
       where: { id }
     })
