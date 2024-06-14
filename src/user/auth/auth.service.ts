@@ -17,10 +17,19 @@ export class AuthService {
     })
 
     if (!user) {
-      throw new HttpException('Usuário não encontrado', 404)
+      throw new HttpException(
+        { error: 'Not Found', message: 'Usuário não encontrado' },
+        404
+      )
     }
     if (!compareSync(loginData.password, user.password)) {
-      throw new HttpException('Email ou senha incorretos', 401)
+      throw new HttpException(
+        {
+          error: 'Unauthorized',
+          message: 'Email ou senha incorretos'
+        },
+        401
+      )
     }
     const payload = {
       id: user.id,

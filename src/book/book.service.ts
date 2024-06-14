@@ -38,7 +38,10 @@ export class BookService {
     })
 
     if (!book) {
-      throw new HttpException('Livro não encontrado', 404)
+      throw new HttpException(
+        { error: 'Not Found', message: 'Livro não encontrado' },
+        404
+      )
     }
     return book
   }
@@ -57,7 +60,10 @@ export class BookService {
       include: { categories: true }
     })
     if (!book) {
-      throw new HttpException('Livro não encontrado', 404)
+      throw new HttpException(
+        { error: 'Not Found', message: 'Livro não encontrado' },
+        404
+      )
     }
     return this.prisma.book.update({
       where: { id },
@@ -72,7 +78,10 @@ export class BookService {
       where: { id }
     })
     if (!book) {
-      throw new HttpException('Livro não encontrado', 404)
+      throw new HttpException(
+        { error: 'Not Found', message: 'Livro não encontrado' },
+        404
+      )
     }
     await this.prisma.favorite.deleteMany({
       where: { book_id: id }

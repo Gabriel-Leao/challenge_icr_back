@@ -10,8 +10,8 @@ export class LoginDto {
   @IsNotEmpty({ message: 'O campo email é obrigatório' })
   email: string
 
-  @IsString({ message: 'O campo password tem que ser um texto' })
-  @IsNotEmpty({ message: 'O campo password é obrigatório' })
+  @IsString({ message: 'O campo senha tem que ser um texto' })
+  @IsNotEmpty({ message: 'O campo senha é obrigatório' })
   @IsStrongPassword(
     {
       minLength: 8,
@@ -22,7 +22,7 @@ export class LoginDto {
     },
     {
       message:
-        'O campo password deve ter no mínimo 8 caracteres, sendo obrigatório 1 letra minúscula, 1 letra maiúscula e 1 número.'
+        'O campo senha deve ter no mínimo 8 caracteres, sendo obrigatório 1 letra minúscula, 1 letra maiúscula e 1 número.'
     }
   )
   password: string

@@ -48,7 +48,10 @@ export class UserService {
     })
 
     if (!user) {
-      throw new HttpException('Usuário não encontrado', 404)
+      throw new HttpException(
+        { error: 'Not Found', message: 'Usuário não encontrado' },
+        404
+      )
     }
     return user
   }
@@ -60,7 +63,10 @@ export class UserService {
       }
     })
     if (user) {
-      throw new HttpException('Email já cadastrado', 400)
+      throw new HttpException(
+        { error: 'Conflict', message: 'Email já cadastrado' },
+        409
+      )
     }
     data.password = hashSync(data.password, genSaltSync(10))
     const id = uuidv4()
@@ -90,7 +96,10 @@ export class UserService {
     })
 
     if (!user) {
-      throw new HttpException('Usuário não encontrado', 404)
+      throw new HttpException(
+        { error: 'Not Found', message: 'Usuário não encontrado' },
+        404
+      )
     }
 
     const userWithSameEmail = await this.prisma.user.findUnique({
@@ -98,7 +107,10 @@ export class UserService {
     })
 
     if (userWithSameEmail) {
-      throw new HttpException('Email já cadastrado', 400)
+      throw new HttpException(
+        { error: 'Conflict', message: 'Email já cadastrado' },
+        409
+      )
     }
 
     data.password = hashSync(data.password, genSaltSync(10))
@@ -118,7 +130,10 @@ export class UserService {
     })
 
     if (!user) {
-      throw new HttpException('Usuário não encontrado', 404)
+      throw new HttpException(
+        { error: 'Not Found', message: 'Usuário não encontrado' },
+        404
+      )
     }
 
     await this.prisma.favorite.deleteMany({
