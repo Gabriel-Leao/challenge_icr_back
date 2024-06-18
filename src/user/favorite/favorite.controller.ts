@@ -31,6 +31,11 @@ export class FavoriteController {
     return await this.favoriteService.addFavorite(userId, bookId)
   }
 
+  @Delete('/:userId')
+  async resetFavorites(@Param('userId') userId: string) {
+    return await this.favoriteService.resetFavorites(userId)
+  }
+
   @UseGuards(AuthGuard)
   @Delete('/:userId/:favoriteId')
   async removeFavorite(@Param('favoriteId') favoriteId: string) {

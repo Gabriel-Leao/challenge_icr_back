@@ -25,6 +25,7 @@ export class UserController {
     return this.userService.getAllUsers()
   }
 
+  @UseGuards(AuthGuard)
   @Get('/:userId')
   async getUser(@Param('userId') userId: string) {
     return await this.userService.getUser(userId)
@@ -35,6 +36,7 @@ export class UserController {
     return await this.userService.createUser(data)
   }
 
+  @UseGuards(AuthGuard)
   @Put('/:userId')
   async updateUser(
     @Param('userId') userId: string,
@@ -43,6 +45,7 @@ export class UserController {
     return await this.userService.updateUser(userId, data)
   }
 
+  @UseGuards(AuthGuard)
   @Delete('/:userId')
   async deleteUser(@Param('userId') userId: string) {
     return await this.userService.deleteUser(userId)

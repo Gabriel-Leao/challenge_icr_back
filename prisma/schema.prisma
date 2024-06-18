@@ -18,6 +18,7 @@ model User {
   name     String
   password String
   role     Role   @default(USER)
+  birthday String
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

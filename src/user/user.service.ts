@@ -68,20 +68,27 @@ export class UserService {
         409
       )
     }
-    data.password = hashSync(data.password, genSaltSync(10))
+    const { name, password, email, role, birthday } = data
+    const hashedPassword = hashSync(password, genSaltSync(10))
     const id = uuidv4()
     await this.prisma.user.create({
       data: {
         id,
-        ...data
+        name,
+        password: hashedPassword,
+        email,
+        role,
+        birthday
       }
     })
 
     const payload = {
       id,
-      role: data.role
+      role: role
     }
     return {
+      message: 'Usuário criado com sucesso',
+      status: 201,
       access_token: this.jwtService.sign(payload, { expiresIn: '7d' })
     }
   }

@@ -59,6 +59,20 @@ export class FavoriteService {
     })
   }
 
+  async resetFavorites(userId: string) {
+    if (userId) {
+      await this.prisma.favorite.deleteMany({ where: { user_id: userId } })
+    } else {
+      throw new HttpException(
+        {
+          error: 'Bad Request',
+          message: 'É necessário enviar o id do usuário'
+        },
+        400
+      )
+    }
+  }
+
   async removeFavorite(favoriteId: string) {
     const favorite = await this.prisma.favorite.findUnique({
       where: {

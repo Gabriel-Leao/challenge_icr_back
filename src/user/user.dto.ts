@@ -5,8 +5,11 @@ import {
   IsOptional,
   IsString,
   IsStrongPassword,
-  Length
+  Length,
+  MaxLength
 } from 'class-validator'
+import { Match } from './decorators/match.decorator'
+import { IsBrazilianDate } from './decorators/isBrazilianDate.decorator'
 
 export enum UserRole {
   USER = 'USER',
@@ -38,7 +41,18 @@ export class CreateUserDto {
         'O campo senha deve ter no mínimo 8 caracteres, sendo obrigatório 1 letra minúscula, 1 letra maiúscula e 1 número.'
     }
   )
+  @MaxLength(64, { message: 'A senha pode ter no máximo 64 caracteres' })
   password: string
+
+  @IsString({ message: 'O campo confirma senha tem que ser um texto' })
+  @Match('password', { message: 'As senhas não coincidem' })
+  confirmPassword: string
+
+  @IsBrazilianDate({
+    message:
+      'Data inválida. Use o formato dd/mm/yyyy e certifique-se de que a data é anterior a 100 anos atrás'
+  })
+  birthday: string
 
   @IsEnum(UserRole, { message: 'O campo role deve ser USER ou ADMIN' })
   @IsOptional()
