@@ -36,6 +36,8 @@ export class AuthService {
       role: user.role
     }
     return {
+      message: 'login efetuado com sucesso',
+      status: 200,
       access_token: this.jwtService.sign(payload, { expiresIn: '7d' })
     }
   }

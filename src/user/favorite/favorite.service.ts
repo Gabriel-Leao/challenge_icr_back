@@ -37,7 +37,7 @@ export class FavoriteService {
         404
       )
     }
-    const favorite = await this.prisma.favorite.findFirst({
+    const oldFavorite = await this.prisma.favorite.findFirst({
       where: {
         book_id: bookId,
         AND: {
@@ -45,18 +45,24 @@ export class FavoriteService {
         }
       }
     })
-    if (favorite) {
+    if (oldFavorite) {
       throw new HttpException(
         { error: 'Conflict', message: 'Livro já favoritado' },
         409
       )
     }
-    return this.prisma.favorite.create({
+    const favorite = await this.prisma.favorite.create({
       data: {
         user_id: userId,
         book_id: bookId
       }
     })
+    return {
+      message: 'Favorito criado com sucesso',
+      success: true,
+      status: 200,
+      favorite
+    }
   }
 
   async resetFavorites(userId: string) {
@@ -70,6 +76,11 @@ export class FavoriteService {
         },
         400
       )
+    }
+    return {
+      message: 'Favoritos apagados com sucesso',
+      success: true,
+      status: 200
     }
   }
 
@@ -87,10 +98,15 @@ export class FavoriteService {
       )
     }
 
-    return this.prisma.favorite.delete({
+    await this.prisma.favorite.delete({
       where: {
         id: favoriteId
       }
     })
+    return {
+      message: 'Favorito deletado com sucesso',
+      success: true,
+      status: 200
+    }
   }
 }

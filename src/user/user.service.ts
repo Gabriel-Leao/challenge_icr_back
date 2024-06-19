@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common'
-import { CreateUserDto } from './user.dto'
+import { CreateUserDto, UpdateUserDto } from './user.dto'
 import { PrismaService } from '../prisma.service'
 import { genSaltSync, hashSync } from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
@@ -53,7 +53,12 @@ export class UserService {
         404
       )
     }
-    return user
+    return {
+      message: 'Usuário encontrado com sucesso',
+      success: true,
+      status: 200,
+      user
+    }
   }
 
   async createUser(data: CreateUserDto) {
@@ -89,11 +94,12 @@ export class UserService {
     return {
       message: 'Usuário criado com sucesso',
       status: 201,
+      success: true,
       access_token: this.jwtService.sign(payload, { expiresIn: '7d' })
     }
   }
 
-  async updateUser(id: string, data: CreateUserDto) {
+  async updateUser(id: string, data: UpdateUserDto) {
     const user = await this.prisma.user.findUnique({
       where: {
         id
@@ -118,13 +124,20 @@ export class UserService {
       )
     }
 
-    data.password = hashSync(data.password, genSaltSync(10))
-    return this.prisma.user.update({
+    if (data.password !== user.password) {
+      data.password = hashSync(data.password, genSaltSync(10))
+    }
+    await this.prisma.user.update({
       where: {
         id
       },
       data
     })
+    return {
+      message: 'Usuário atualizado com sucesso',
+      success: true,
+      status: 200
+    }
   }
 
   async deleteUser(id: string) {
@@ -144,10 +157,15 @@ export class UserService {
     await this.prisma.favorite.deleteMany({
       where: { user_id: id }
     })
-    return this.prisma.user.delete({
+    await this.prisma.user.delete({
       where: {
         id
       }
     })
+    return {
+      message: 'Usuário deletado com sucesso',
+      success: true,
+      status: 200
+    }
   }
 }
