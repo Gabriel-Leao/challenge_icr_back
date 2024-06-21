@@ -1,0 +1,10 @@
+.idea
+dist
+node_modules
+.env.example
+.eslintrc.js
+.gitignore
+.prettierrc
+challenge_icr_back.iml
+LICENSE
+README.md
