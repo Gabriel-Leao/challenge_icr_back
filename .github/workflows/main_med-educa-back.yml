@@ -63,9 +63,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_C6A77968268D4ABFA6926169B65D7F5B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1C4C66F0D5FB423BB60CEDD9DABCB727 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1E438462BB234362B89CAE7E17E18FE6 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -74,4 +74,3 @@ jobs:
           app-name: 'med-educa-back'
           slot-name: 'Production'
           package: .
-          deployment-method: zipDeploy
