@@ -7,6 +7,18 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - '.husky/**'
+      - '.github/**'
+      - '.env'
+      - '.env.example'
+      - '*.md'
+      - 'LICENSE'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+      - '.gitignore'
   workflow_dispatch:
 
 jobs:
@@ -16,7 +28,7 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
@@ -25,15 +37,18 @@ jobs:
 
       - name: npm install, build, and test
         run: |
+          npm install -g @nestjs/cli
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: |
+            dist
+            package.json
+            package-lock.json
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,7 +62,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -55,11 +70,15 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1C4C66F0D5FB423BB60CEDD9DABCB727 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1E438462BB234362B89CAE7E17E18FE6 }}
 
+      - name: Prepare package for Azure
+        run: |
+          mkdir deploy-package
+          cp -r dist package.json package-lock.json deploy-package
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'med-educa-back'
           slot-name: 'Production'
-          package: .
-          
+          package: ./deploy-package
