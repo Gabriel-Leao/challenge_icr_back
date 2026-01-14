@@ -74,3 +74,4 @@ jobs:
           app-name: 'med-educa-back'
           slot-name: 'Production'
           package: .
+          deployment-method: zipDeploy
